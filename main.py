@@ -31,12 +31,18 @@ def make_driver(link, program_start) -> webdriver:
     print(f"Adapter Created {driver.start_time - program_start:.2f}")
     return driver
 
+def get_deck():
+    print("test")
+    return
+
 
 with cf.ThreadPoolExecutor(max_workers=16) as executor:
     with open("blue_farm_links", "r") as file:
+        successful_drivers = []
         program_start = time.perf_counter()
         test_links = file.read().strip().split('\n')
         futures = [executor.submit(make_driver(link, program_start)) for link in test_links]
-        successful_drivers = [future.result() for future in cf.as_completed(futures) if
-                              future.result().request.response.status_code in future.result().valid_resps]
-        print(successful_drivers)
+        futures = [future.add_done_callback(fn=get_deck()) for future in futures]
+        for future in cf.as_completed(futures):
+            testing = [request.response.status_code for request in future.result().requests if
+                       request.url == future.result().link]
