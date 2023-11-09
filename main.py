@@ -33,7 +33,7 @@ def make_driver(link, program_start) -> webdriver:
 
 def get_deck():
     print("test")
-    return
+    return None
 
 
 with cf.ThreadPoolExecutor(max_workers=16) as executor:
